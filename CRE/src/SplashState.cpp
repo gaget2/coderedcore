@@ -6,15 +6,12 @@ namespace CRE
 	SplashState::SplashState(App& theApp, const std::string filename, float delay) :
 		State("SplashState", theApp),
 		_splashFilename(filename),
-		_splashDelay(delay),
-		_frameCount(0)
+		_splashDelay(delay)
 	{
 		_color = _splashSprite.getColor();
 		_splashTexture.loadFromFile(_splashFilename);
 		_splashSprite.setTexture(_splashTexture);
 		_splashSprite.setPosition(0, 0);
-
-		_parabolaAlphaOffsetX = int(theApp.get_update_rate() * _splashDelay);
 	}
 
 	SplashState::~SplashState(void)
@@ -43,13 +40,18 @@ namespace CRE
 	{
 		// Set alpha value for splash sprite
 		// This is an equation for a parabola. No need to fully
-		// understand it
-		_color.a = (-1 * (_frameCount - _parabolaAlphaOffsetX / 2) * 
-			(_frameCount - _parabolaAlphaOffsetX / 2) / 90) + 255;
+		// understand it. The reason this is so fucking clunky
+		// is that the parabola varies on the time of the splash delay.
+		// y = a(x-h)^2 + k. Well this means that the values of a, h, and k
+		// change depending on the delay set. After a little bit of algebra
+		// it turns out that a = (255 * 4) / t^2 where t is the splash delay,
+		// (h, k) is the vertex (we want the alpha to be its highest during
+		// the middle of the delay), so h = t/2 and k = 255.
+		_color.a = -1 * ((255 * 4) / (_splashDelay * _splashDelay))
+					* (get_elapsed_time() - _splashDelay/2) * (get_elapsed_time() - _splashDelay/2)
+					+255;
 
 		_splashSprite.setColor(_color);
-
-		_frameCount++;
 	}
 
 	void SplashState::draw(void)
@@ -60,6 +62,8 @@ namespace CRE
 
 		// Draw the splash sprite
 		_theApp._window.draw(_splashSprite);
+
+		// App core refreshes window for us
 	}
 
 	void SplashState::handle_cleanup(void)

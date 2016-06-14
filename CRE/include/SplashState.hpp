@@ -70,9 +70,6 @@ namespace CRE
 			sf::Color _color;
 
 			float _splashDelay;
-
-			int _parabolaAlphaOffsetX;
-			int _frameCount;
 	};
 }
 
