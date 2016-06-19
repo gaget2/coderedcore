@@ -49,14 +49,14 @@ namespace CRE
 			/**
 			* Creates a new text object at a specified location. Uses the default font.
 			*/
-			void add_text(std::string textID, std::string textString, sf::Vector2f coordinate);
+			void add_text(std::string textID, std::string textString, sf::Vector2f coordinate, unsigned int charSize = 30);
 
 			/**
 			* Creates a new text object like the function above, but uses a supplied font
 			* instead of the default font.
 			*/
 			void add_text(std::string textID, std::string textString, sf::Font theFont, 
-				sf::Vector2f coordinate);
+				sf::Vector2f coordinate, unsigned int charSize = 30);
 
 			/**
 			* Draws all the texts to the App window.
@@ -100,7 +100,7 @@ namespace CRE
 			App * _theApp;
 
 			// Vector stores the texts
-			std::vector<CRE::Text> _texts;
+			std::vector<CRE::Text *> _texts;
 
 			// The default font all new texts will used unless specified otherwise
 			sf::Font _defaultFont;
